@@ -3,21 +3,63 @@
     <head>
         <meta charset="UTF-8">
         <title> Neural3D | Welcome</title>
-        <link rel="stylesheet" href=""{{ url_for('static', filename='styles.css') }}>
+        <link rel="stylesheet" href={{ url_for('static', filename='styles.css') }}>
     </head>
     <body>
-        <header class="main-header">
-            <h1>
-                <span class="neural-text">Neural</span><span class="gradient-text">3D</span>
-            </h1>
-        </header>
-        <main>
-            <p id="greeting">loading...</p>
+        <div class="page-container">
+            <header class="main-header">
+                <h1>
+                    <span class="neural-text">Neural</span><span class="gradient-text">3D</span>
+                </h1>
+            </header>
+        <main class="main-content">
+            <div id="responseArea" class="chat-area"></div>
+        </main>
+
+        <div class="input-container">
+            <textarea id="questionBox" placeholder="Ask a question about AI..."></textarea>
+            <button onclick="askAI()">➤</button>
+        </div>
+        </div>
         </main>
         <script>
-            fetch("/api/hello")
-            .then(r => r.json())
-            .then(d => document.getElementById("greeting").textContent = d.msg);
+            function askAI() {
+                const input = document.getElementById("questionBox");
+                const question = input.value.trim();
+                if (!question) return;
+
+                const chatArea = document.getElementById("responseArea");
+                const userMsg = document.createElement("div");
+                userMsg.className = "chat-message user";
+                userMsg.textContext = question;
+                chatArea.appendChild(userMsg);
+
+                fetct("/api/ask", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({question})
+                })
+
+                .then(res => res.json())
+                .then(data => {
+                    const aiMsg = document.createElement("div");
+                    aiMsg.className = "chat-message ai";
+                    chatArea.appendChild(aiMsg);
+
+                    const text = data.answer || data.error;
+                    let i = 0;
+                    function typeWriter(){
+                        if (i < text.length){
+                            aiMsg.textContent += text.charAt(i);
+                            i++;
+                            setTimeout(typeWriter, 15);
+                            chatArea.scrollTop = chatArea.scrollHeight;
+                        }
+                    }
+                    typeWriter()
+                    input.value = "";
+                })
+        }
         </script>
     </body>
 </html>

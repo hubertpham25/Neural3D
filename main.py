@@ -1,6 +1,11 @@
 from flask import Flask, render_template, request, jsonify
-
+from openai import OpenAI
+from dotenv import load_dotenv
+import os
 app = Flask(__name__)
+
+load_dotenv()
+client = OpenAI(api_key=os.getenv("openai_key"))
 
 @app.route("/")
 def index():
@@ -26,6 +31,22 @@ def ask():
                         if needed, the math that comes with AI, etc. 
                         Your job is to teach it in a way that someone
                         with no knowledge understands these advanced topics.'''
+    try:
+        response = client.responses.create(
+            model = "gpt-4o-mini",
+            messages=[{
+                "role": "system",
+                "content": contentInstructions},
+                {
+                "role": "user",
+                "content": userQuestion}
+                ]
+        )
+        aiAnswer = response["choices"][0]["message"]["content"]
+        return jsonify({"answer": aiAnswer})
+    
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
     app.run(debug=True)
