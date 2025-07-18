@@ -1,0 +1,32 @@
+body{
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #121212;
+    color: #ffffff;
+}
+
+.main-header {
+    background-color: white;
+    padding: 0.5rem 1rem;
+    display: flex;
+    align-items: center;
+    height: 50px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.main-header h1{
+    margin: 0;
+    font-size: 1.25rem;
+}
+
+.neural-text {
+    color: black;
+    font-weight: 600;
+}
+
+.gradient-text {
+    font-weight: 600;
+    background: linear-gradient(to right, #00c3ff, #7c00ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
